@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectHub - Kanban Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== LIGHT THEME ========== */
+        :root {
+            --bg-gradient-1: #f8fafc;
+            --bg-gradient-2: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --accent-1: #0f172a;
+            --accent-2: #3b82f6;
+            --accent-3: #8b5cf6;
+            --accent-4: #ec4899;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+            --border-light: rgba(0, 0, 0, 0.08);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --todo-header: linear-gradient(135deg, #f093fb, #f5576c);
+            --doing-header: linear-gradient(135deg, #4facfe, #00f2fe);
+            --done-header: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        /* ========== DARK THEME ========== */
+        body.dark {
+            --bg-gradient-1: #020617;
+            --bg-gradient-2: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.98);
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --accent-1: #f8fafc;
+            --accent-2: #60a5fa;
+            --accent-3: #a78bfa;
+            --accent-4: #f472b6;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --todo-header: linear-gradient(135deg, #c026d3, #e11d48);
+            --doing-header: linear-gradient(135deg, #2563eb, #0891b2);
+            --done-header: linear-gradient(135deg, #059669, #0d9488);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            position: relative;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, var(--accent-2), transparent);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: floatParticle 20s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-50px) translateX(100px); }
+            75% { transform: translateY(50px) translateX(50px); }
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-4));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo:hover { transform: scale(1.02); }
+
+        .nav-links {
+            display: flex;
+            gap: 0.25rem;
+            list-style: none;
+            background: var(--card-bg);
+            padding: 0.25rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-light);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+        .theme-toggle:hover { transform: scale(1.05) rotate(5deg); box-shadow: var(--shadow-md); }
+
+        .notification-icon {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            padding: 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            position: relative;
+        }
+        .notification-icon:hover { transform: scale(1.05); background: var(--accent-2); color: white; }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 0.6rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 50%;
+            font-weight: bold;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        /* ========== MAIN CONTAINER ========== */
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .board-header {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-xl);
+        }
+        .board-header h1 { color: var(--text-primary); margin-bottom: 0.5rem; }
+        .board-header p { color: var(--text-secondary); }
+
+        .add-task-btn {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .add-task-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .column {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1rem;
+            min-height: 500px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s;
+        }
+        .column.drag-over {
+            background: var(--card-bg);
+            border: 2px dashed var(--accent-2);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .column-header {
+            padding: 1rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: white;
+        }
+        .todo-header { background: var(--todo-header); }
+        .doing-header { background: var(--doing-header); }
+        .done-header { background: var(--done-header); }
+
+        .task-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid var(--accent-2);
+            border-right: 1px solid var(--border-light);
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+        .task-card:hover { transform: translateX(5px); box-shadow: var(--shadow-lg); }
+
+        .task-title { font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1rem; }
+        .task-desc { color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.75rem; }
+        .assigned-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(139, 92, 246, 0.15); color: var(--accent-3); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        .priority-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+        .priority-high { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .priority-medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .priority-low { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .due-date { display: inline-block; margin-left: 0.5rem; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; background: var(--glass-bg); color: var(--text-tertiary); }
+        .overdue { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .task-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+        .task-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem; }
+        .task-actions button { background: none; border: none; cursor: pointer; font-size: 0.75rem; padding: 0.3rem 0.6rem; border-radius: 6px; transition: all 0.3s; }
+        .comment-btn { color: var(--accent-2); }
+        .comment-btn:hover { background: rgba(59, 130, 246, 0.1); }
+        .edit-btn { color: #f59e0b; }
+        .edit-btn:hover { background: rgba(245, 158, 11, 0.1); }
+        .delete-btn { color: #ef4444; }
+        .delete-btn:hover { background: rgba(239, 68, 68, 0.1); }
+
+        .empty-column { text-align: center; padding: 2rem; color: var(--text-tertiary); }
+
+        /* Task Detail Panel */
+        .task-detail-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            display: none;
+            box-shadow: var(--shadow-2xl);
+        }
+        .task-detail-panel.show { display: block; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .close-panel { float: right; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-tertiary); transition: all 0.3s; }
+        .close-panel:hover { color: #ef4444; transform: scale(1.1); }
+
+        .detail-tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--border-light); margin-bottom: 1rem; }
+        .detail-tab { padding: 0.5rem 1rem; cursor: pointer; color: var(--text-secondary); font-weight: 500; transition: all 0.3s; }
+        .detail-tab.active { color: var(--accent-2); border-bottom: 2px solid var(--accent-2); }
+
+        .comment-item { padding: 1rem; border-bottom: 1px solid var(--border-light); display: flex; gap: 1rem; }
+        .comment-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .comment-content { flex: 1; }
+        .comment-name { font-weight: 600; color: var(--text-primary); font-size: 0.9rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem; }
+        .comment-role { font-size: 0.65rem; background: rgba(139, 92, 246, 0.15); padding: 0.1rem 0.4rem; border-radius: 10px; color: var(--accent-3); }
+        .comment-time { font-size: 0.7rem; color: var(--text-tertiary); }
+        .comment-text { margin-top: 0.3rem; color: var(--text-secondary); font-size: 0.85rem; }
+
+        .comment-input-area { margin-top: 1rem; display: flex; gap: 1rem; }
+        .comment-input-area textarea { flex: 1; padding: 0.8rem; background: var(--glass-bg); border: 1px solid var(--border-light); border-radius: 16px; font-family: inherit; color: var(--text-primary); resize: vertical; }
+        .comment-input-area button { background: linear-gradient(135deg, var(--accent-2), var(--accent-3)); color: white; border: none; padding: 0 1.5rem; border-radius: 16px; cursor: pointer; transition: all 0.3s; }
+        .comment-input-area button:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        .activity-item { padding: 0.8rem; border-left: 3px solid var(--accent-2); margin-bottom: 0.8rem; background: var(--glass-bg); border-radius: 12px; }
+        .activity-action { font-weight: 600; color: var(--accent-2); }
+        .activity-details { color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.2rem; }
+        .activity-time { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 0.2rem; }
+
+        .team-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid var(--border-light);
+        }
+        .team-title { font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .team-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .team-member { background: var(--glass-bg); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; color: var(--text-secondary); }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card-bg); border-radius: 24px; padding: 2rem; max-width: 500px; width: 90%; animation: modalSlideIn 0.3s ease; max-height: 80vh; overflow-y: auto; border: 1px solid var(--border-light); }
+        @keyframes modalSlideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-primary); }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; background: var(--glass-bg); border: 1px solid var(--border-light); border-radius: 12px; font-family: inherit; color: var(--text-primary); transition: all 0.3s; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        .modal-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .btn-cancel { background: var(--glass-bg); color: var(--text-secondary); flex: 1; padding: 0.75rem; border: 1px solid var(--border-light); border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+        .btn-save { background: linear-gradient(135deg, var(--accent-2), var(--accent-3)); color: white; flex: 1; padding: 0.75rem; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; border-radius: 12px; color: white; animation: slideInRight 0.3s ease; z-index: 3000; font-weight: 500; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-lg); }
+        @keyframes slideInRight { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        @media (max-width: 1024px) { .kanban-board { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .nav-links { display: none; } .container { padding: 0 1rem; } }
+    </style>
+</head>
+<body>
+    <!-- Animated Particles -->
+    <div class="particles" id="particles"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='dashboard.html'">
+                <div class="logo-icon"><i class="fas fa-cube"></i></div>
+                <div class="logo-text">Project<span style="color:var(--accent-4);">Hub</span></div>
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="window.location.href='dashboard.html'"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a onclick="window.location.href='projects.html'"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a onclick="window.location.href='my-tasks.html'"><i class="fas fa-tasks"></i> My Tasks</a></li>
+            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">🌙</button>
+                <div class="notification-icon" onclick="window.location.href='notifications.html'">
+                    <i class="fas fa-bell"></i>
+                    <span id="notificationBadge" class="notification-badge" style="display:none;">0</span>
+                </div>
+                <button class="back-btn" onclick="window.location.href='projects.html'"><i class="fas fa-arrow-left"></i> Back to Projects</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="board-header">
+            <h1 id="projectName"><i class="fas fa-columns"></i> Kanban Board</h1>
+            <p id="projectDesc"><i class="fas fa-info-circle"></i> Click on any task to view comments and activity timeline | Drag & drop tasks to change status</p>
+        </div>
+
+        <button class="add-task-btn" onclick="openCreateModal()"><i class="fas fa-plus"></i> Add New Task</button>
+
+        <div class="kanban-board">
+            <div class="column" id="todoColumn" data-status="todo" ondrop="dropTask(event)" ondragover="allowDrop(event)" ondragleave="removeDragOver(event)">
+                <div class="column-header todo-header"><h2><i class="fas fa-list"></i> TO DO</h2><div id="todoCount" style="font-size:12px">0 tasks</div></div>
+                <div id="todoTasks"></div>
+            </div>
+            <div class="column" id="doingColumn" data-status="doing" ondrop="dropTask(event)" ondragover="allowDrop(event)" ondragleave="removeDragOver(event)">
+                <div class="column-header doing-header"><h2><i class="fas fa-spinner"></i> IN PROGRESS</h2><div id="doingCount" style="font-size:12px">0 tasks</div></div>
+                <div id="doingTasks"></div>
+            </div>
+            <div class="column" id="doneColumn" data-status="done" ondrop="dropTask(event)" ondragover="allowDrop(event)" ondragleave="removeDragOver(event)">
+                <div class="column-header done-header"><h2><i class="fas fa-check-circle"></i> COMPLETED</h2><div id="doneCount" style="font-size:12px">0 tasks</div></div>
+                <div id="doneTasks"></div>
+            </div>
+        </div>
+        
+        <div id="taskDetailPanel" class="task-detail-panel">
+            <button class="close-panel" onclick="closeTaskDetail()"><i class="fas fa-times"></i></button>
+            <div class="detail-tabs">
+                <div class="detail-tab active" onclick="switchTab('comments')"><i class="fas fa-comment"></i> Comments</div>
+                <div class="detail-tab" onclick="switchTab('activity')"><i class="fas fa-history"></i> Activity Timeline</div>
+            </div>
+            <div id="commentsTab">
+                <div id="commentsList"></div>
+                <div class="comment-input-area">
+                    <textarea id="commentInput" placeholder="Write a comment... Everyone on this project can see it" rows="2"></textarea>
+                    <button onclick="addComment()"><i class="fas fa-paper-plane"></i> Post</button>
+                </div>
+            </div>
+            <div id="activityTab" style="display: none;">
+                <div id="activityList"></div>
+            </div>
+        </div>
+        
+        <div class="team-section">
+            <div class="team-title"><i class="fas fa-users"></i> Team Members</div>
+            <div class="team-list" id="teamList">
+                <span class="team-member"><i class="fas fa-user-tie"></i> Project Manager</span>
+                <span class="team-member"><i class="fas fa-code"></i> Developer</span>
+                <span class="team-member"><i class="fas fa-palette"></i> Designer</span>
+                <span class="team-member"><i class="fas fa-vial"></i> Tester</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle"><i class="fas fa-tasks"></i> Create New Task</h3>
+            <form id="taskForm">
+                <div class="form-group"><label><i class="fas fa-heading"></i> Task Title *</label><input type="text" id="taskTitle" required placeholder="Enter task title"></div>
+                <div class="form-group"><label><i class="fas fa-align-left"></i> Description</label><textarea id="taskDesc" rows="3" placeholder="Enter task description"></textarea></div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-check"></i> Assign To</label>
+                    <select id="taskAssignedTo">
+                        <option value="">📌 Unassigned</option>
+                        <option value="Project Manager">👤 Project Manager</option>
+                        <option value="Developer">👨‍💻 Developer</option>
+                        <option value="Designer">🎨 Designer</option>
+                        <option value="Tester">🧪 Tester</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-flag"></i> Priority</label>
+                    <select id="taskPriority">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium" selected>🟡 Medium</option>
+                        <option value="high">🔴 High</option>
+                    </select>
+                </div>
+                <div class="form-group"><label><i class="fas fa-calendar"></i> Due Date</label><input type="date" id="taskDueDate"></div>
+                <div class="modal-buttons"><button type="button" class="btn-cancel" onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button><button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Task</button></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        let currentProjectId = null;
+        let currentEditTaskId = null;
+        let currentSelectedTaskId = null;
+        let allTasks = [];
+        let currentUser = null;
+        let tasksLoaded = false;
+
+        // Create animated particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 200 + 50 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = 15 + Math.random() * 10 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // ============ THEME MANAGEMENT ============
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (document.body.classList.contains('dark')) {
+                themeBtn.innerHTML = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeBtn.innerHTML = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark');
+                document.getElementById('themeToggleBtn').innerHTML = '☀️';
+            }
+        }
+
+        window.onload = async function() {
+            createParticles();
+            loadTheme();
+            
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = 'login.html'; return; }
+
+            try {
+                currentUser = JSON.parse(localStorage.getItem('user'));
+            } catch(e) {}
+            if (!currentUser) currentUser = { name: 'User', email: 'user@example.com', _id: 'user123', role: 'developer' };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            currentProjectId = urlParams.get("projectId");
+            const taskIdFromUrl = urlParams.get("taskId");
+
+            if (!currentProjectId) {
+                alert("No project selected! Redirecting to projects page.");
+                window.location.href = 'projects.html';
+                return;
+            }
+
+            await loadProjectDetails();
+            await loadTasks();
+            setTimeout(setupDragEvents, 100);
+            
+            if (taskIdFromUrl) {
+                console.log('🔔 Opening task from notification:', taskIdFromUrl);
+                const waitForTasks = setInterval(() => {
+                    if (allTasks.length > 0 || tasksLoaded) {
+                        clearInterval(waitForTasks);
+                        setTimeout(() => {
+                            openTaskDetail(taskIdFromUrl);
+                            const taskCard = document.querySelector(`.task-card[data-task-id="${taskIdFromUrl}"]`);
+                            if (taskCard) {
+                                taskCard.style.border = '2px solid var(--accent-4)';
+                                taskCard.style.backgroundColor = 'rgba(236, 72, 153, 0.1)';
+                                setTimeout(() => {
+                                    taskCard.style.border = '';
+                                    taskCard.style.backgroundColor = '';
+                                }, 3000);
+                            }
+                        }, 500);
+                    }
+                }, 100);
+            }
+            
+            await fetchUnreadCount();
+            setInterval(fetchUnreadCount, 10000);
+        };
+        
+        async function fetchUnreadCount() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/notifications`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const notifications = await res.json();
+                const unreadCount = notifications.filter(n => !n.isRead).length;
+                const badge = document.getElementById('notificationBadge');
+                if (badge) {
+                    if (unreadCount > 0) {
+                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        }
+
+        async function loadProjectDetails() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/projects/${currentProjectId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const project = await res.json();
+                    document.getElementById('projectName').innerHTML = `<i class="fas fa-folder"></i> ${project.projectName || 'Kanban Board'}`;
+                }
+            } catch (error) { console.error("Error loading project:", error); }
+        }
+
+        async function loadTasks() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/tasks?projectId=${currentProjectId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.status === 401) { 
+                    localStorage.removeItem('token'); 
+                    window.location.href = 'login.html'; 
+                    return; 
+                }
+                
+                if (!res.ok) {
+                    const altRes = await fetch(`${API_URL}/tasks/project/${currentProjectId}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (altRes.ok) {
+                        allTasks = await altRes.json();
+                    } else {
+                        throw new Error('Failed to load tasks');
+                    }
+                } else {
+                    allTasks = await res.json();
+                }
+                
+                tasksLoaded = true;
+                console.log('✅ Loaded tasks:', allTasks);
+                renderBoard();
+            } catch (error) { 
+                console.error("Error loading tasks:", error);
+                showToast('Error loading tasks: ' + error.message, 'error');
+            }
+        }
+
+        function renderBoard() {
+            const todoTasks = allTasks.filter(t => t.status === 'todo' || t.status === 'pending');
+            const doingTasks = allTasks.filter(t => t.status === 'doing' || t.status === 'in-progress');
+            const doneTasks = allTasks.filter(t => t.status === 'done' || t.status === 'completed');
+
+            document.getElementById('todoCount').textContent = `${todoTasks.length} tasks`;
+            document.getElementById('doingCount').textContent = `${doingTasks.length} tasks`;
+            document.getElementById('doneCount').textContent = `${doneTasks.length} tasks`;
+
+            renderColumn('todoTasks', todoTasks);
+            renderColumn('doingTasks', doingTasks);
+            renderColumn('doneTasks', doneTasks);
+        }
+
+        function renderColumn(columnId, tasks) {
+            const column = document.getElementById(columnId);
+            if (tasks.length === 0) {
+                column.innerHTML = '<div class="empty-column"><i class="fas fa-inbox"></i> Drop tasks here</div>';
+                return;
+            }
+            column.innerHTML = tasks.map(task => {
+                const priorityIcon = task.priority === 'high' ? '🔴' : task.priority === 'medium' ? '🟡' : '🟢';
+                const priorityText = task.priority ? task.priority.toUpperCase() : 'MEDIUM';
+                const isOverdue = task.dueDate && task.status !== 'done' && new Date(task.dueDate) < new Date();
+                const assignedTo = task.assignedToName || task.assignedTo || 'Unassigned';
+                const assignedIcon = assignedTo !== 'Unassigned' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-user-slash"></i>';
+                return `
+                    <div class="task-card" data-task-id="${task._id}" data-task-status="${task.status}" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)">
+                        <div class="task-title">${escapeHtml(task.title)}</div>
+                        <div class="task-desc">${escapeHtml(task.description || 'No description')}</div>
+                        <div class="task-meta">
+                            <span class="assigned-badge">${assignedIcon} ${escapeHtml(assignedTo)}</span>
+                            <span class="priority-badge priority-${task.priority || 'medium'}">${priorityIcon} ${priorityText}</span>
+                            ${task.dueDate ? `<span class="due-date ${isOverdue ? 'overdue' : ''}"><i class="fas fa-calendar"></i> ${formatDate(task.dueDate)} ${isOverdue ? '⚠️' : ''}</span>` : ''}
+                        </div>
+                        <div class="task-actions" onclick="event.stopPropagation()">
+                            <button class="comment-btn" onclick="openTaskDetail('${task._id}')"><i class="fas fa-comment"></i> Comment</button>
+                            <button class="edit-btn" onclick="openEditModal('${task._id}')"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="delete-btn" onclick="deleteTask('${task._id}')"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function openTaskDetail(taskId) {
+            currentSelectedTaskId = taskId;
+            const panel = document.getElementById('taskDetailPanel');
+            panel.classList.add('show');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            await loadComments(taskId);
+            await loadActivity(taskId);
+        }
+
+        function closeTaskDetail() {
+            document.getElementById('taskDetailPanel').classList.remove('show');
+            currentSelectedTaskId = null;
+        }
+
+        function switchTab(tab) {
+            const commentsTab = document.getElementById('commentsTab');
+            const activityTab = document.getElementById('activityTab');
+            const tabs = document.querySelectorAll('.detail-tab');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            if (tab === 'comments') {
+                commentsTab.style.display = 'block';
+                activityTab.style.display = 'none';
+                tabs[0].classList.add('active');
+            } else {
+                commentsTab.style.display = 'none';
+                activityTab.style.display = 'block';
+                tabs[1].classList.add('active');
+            }
+        }
+
+        async function loadComments(taskId) {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/tasks/${taskId}/comments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!res.ok) {
+                    const error = await res.json();
+                    showToast(error.message || 'Error loading comments', 'error');
+                    return;
+                }
+                
+                const comments = await res.json();
+                console.log('✅ Loaded comments:', comments);
+                
+                const container = document.getElementById('commentsList');
+                if (comments.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-tertiary);"><i class="fas fa-comment-dots"></i> No comments yet. Be the first to comment!</div>';
+                    return;
+                }
+                
+                container.innerHTML = comments.map(c => {
+                    const userRole = c.userRole || getRoleFromName(c.userName);
+                    const avatarBg = getAvatarColor(c.userName);
+                    return `
+                        <div class="comment-item">
+                            <div class="comment-avatar" style="background: ${avatarBg}">${escapeHtml(c.userName?.charAt(0) || 'U')}</div>
+                            <div class="comment-content">
+                                <div class="comment-name">
+                                    ${escapeHtml(c.userName)}
+                                    <span class="comment-role">${escapeHtml(userRole)}</span>
+                                    <span class="comment-time"><i class="far fa-clock"></i> ${formatTime(c.createdAt)}</span>
+                                </div>
+                                <div class="comment-text">${escapeHtml(c.content)}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                document.getElementById('commentsList').innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Error loading comments</div>';
+            }
+        }
+
+        async function addComment() {
+            const content = document.getElementById('commentInput').value;
+            if (!content.trim()) {
+                showToast('Please enter a comment', 'error');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/tasks/${currentSelectedTaskId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ content })
+                });
+                
+                if (res.ok) {
+                    document.getElementById('commentInput').value = '';
+                    await loadComments(currentSelectedTaskId);
+                    showToast('<i class="fas fa-check-circle"></i> Comment added! Everyone can see it', 'success');
+                    await fetchUnreadCount();
+                } else {
+                    const err = await res.json();
+                    showToast(err.message || 'Error adding comment', 'error');
+                }
+            } catch (error) {
+                showToast('Error adding comment', 'error');
+            }
+        }
+
+        async function loadActivity(taskId) {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/tasks/${taskId}/activities`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const activities = await res.json();
+                
+                const container = document.getElementById('activityList');
+                if (activities.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-tertiary);"><i class="fas fa-history"></i> No activity yet</div>';
+                    return;
+                }
+                
+                container.innerHTML = activities.map(a => `
+                    <div class="activity-item">
+                        <div class="activity-action">${getActionIcon(a.action)} ${a.action.replace(/_/g, ' ').toUpperCase()}</div>
+                        <div class="activity-details">${escapeHtml(a.details || '')}</div>
+                        <div class="activity-time"><i class="far fa-clock"></i> By ${escapeHtml(a.userName)} • ${formatTime(a.createdAt)}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading activity:', error);
+            }
+        }
+
+        function getRoleFromName(name) {
+            const roles = {
+                'Ananiya': 'Project Manager',
+                'Neha': 'Project Manager',
+                'Rahul': 'Developer',
+                'Priya': 'Designer',
+                'Karthik': 'Tester'
+            };
+            return roles[name] || 'Team Member';
+        }
+
+        function getAvatarColor(name) {
+            const colors = ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#f5576c', '#f59e0b'];
+            const index = (name?.length || 0) % colors.length;
+            return colors[index];
+        }
+
+        function getActionIcon(action) {
+            const icons = {
+                'created_task': '✅',
+                'updated_task': '✏️',
+                'moved_task': '🔄',
+                'added_comment': '💬',
+                'deleted_task': '🗑️'
+            };
+            return icons[action] || '📌';
+        }
+
+        // ============ DRAG & DROP ============
+        let draggedTaskId = null;
+        let draggedTaskStatus = null;
+
+        function dragStart(event) {
+            const taskCard = event.target.closest('.task-card');
+            if (!taskCard) return;
+            draggedTaskId = taskCard.getAttribute('data-task-id');
+            draggedTaskStatus = taskCard.getAttribute('data-task-status');
+            taskCard.style.opacity = '0.5';
+            event.dataTransfer.setData('text/plain', draggedTaskId);
+        }
+
+        function dragEnd(event) {
+            const taskCard = event.target.closest('.task-card');
+            if (taskCard) taskCard.style.opacity = '1';
+            document.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
+        }
+
+        function allowDrop(event) { event.preventDefault(); }
+        function removeDragOver(event) { event.target.closest('.column')?.classList.remove('drag-over'); }
+
+        async function dropTask(event) {
+            event.preventDefault();
+            const targetColumn = event.target.closest('.column');
+            if (!targetColumn) return;
+            targetColumn.classList.remove('drag-over');
+            const newStatus = targetColumn.getAttribute('data-status');
+            const taskId = draggedTaskId;
+            if (!taskId || draggedTaskStatus === newStatus) return;
+
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/tasks/${taskId}/move`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (res.ok) {
+                    showToast(`Task moved to ${newStatus.toUpperCase()}`, 'success');
+                    loadTasks();
+                    if (currentSelectedTaskId === taskId) {
+                        await loadActivity(taskId);
+                    }
+                } else {
+                    showToast('Error moving task', 'error');
+                }
+            } catch (error) { 
+                showToast('Error moving task', 'error'); 
+            }
+            draggedTaskId = null;
+        }
+
+        function setupDragEvents() {
+            document.querySelectorAll('.column').forEach(column => {
+                column.addEventListener('dragover', (e) => { 
+                    e.preventDefault(); 
+                    column.classList.add('drag-over'); 
+                });
+                column.addEventListener('dragleave', (e) => { 
+                    column.classList.remove('drag-over'); 
+                });
+            });
+        }
+
+        // ============ CRUD OPERATIONS ============
+        function openCreateModal() {
+            currentEditTaskId = null;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Create New Task';
+            document.getElementById('taskForm').reset();
+            document.getElementById('taskAssignedTo').value = "";
+            document.getElementById('taskPriority').value = "medium";
+            document.getElementById('taskModal').style.display = 'flex';
+            document.getElementById('taskForm').onsubmit = (e) => { e.preventDefault(); createTask(); };
+        }
+
+        async function openEditModal(taskId) {
+            const task = allTasks.find(t => t._id === taskId);
+            if (!task) return;
+            currentEditTaskId = taskId;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Task';
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDesc').value = task.description || '';
+            document.getElementById('taskAssignedTo').value = task.assignedToName || task.assignedTo || '';
+            document.getElementById('taskPriority').value = task.priority || 'medium';
+            document.getElementById('taskDueDate').value = task.dueDate ? task.dueDate.split('T')[0] : '';
+            document.getElementById('taskModal').style.display = 'flex';
+            document.getElementById('taskForm').onsubmit = (e) => { e.preventDefault(); updateTask(); };
+        }
+
+        async function createTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDesc').value;
+            const assignedTo = document.getElementById('taskAssignedTo').value;
+            const priority = document.getElementById('taskPriority').value;
+            const dueDate = document.getElementById('taskDueDate').value;
+
+            if (!title) { showToast('Please enter task title', 'error'); return; }
+
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/tasks`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ 
+                        title, description, assignedTo, priority, dueDate, 
+                        projectId: currentProjectId, status: 'todo' 
+                    })
+                });
+                if (res.ok) {
+                    showToast('Task created successfully!', 'success');
+                    closeModal();
+                    loadTasks();
+                } else { 
+                    const err = await res.json();
+                    showToast(err.message || 'Error creating task', 'error'); 
+                }
+            } catch (error) { 
+                showToast('Error creating task', 'error'); 
+            }
+        }
+
+        async function updateTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDesc').value;
+            const assignedTo = document.getElementById('taskAssignedTo').value;
+            const priority = document.getElementById('taskPriority').value;
+            const dueDate = document.getElementById('taskDueDate').value;
+
+            if (!title) { showToast('Please enter task title', 'error'); return; }
+
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/tasks/${currentEditTaskId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ title, description, assignedTo, priority, dueDate })
+                });
+                if (res.ok) {
+                    showToast('Task updated successfully!', 'success');
+                    closeModal();
+                    loadTasks();
+                    if (currentSelectedTaskId === currentEditTaskId) {
+                        await loadActivity(currentSelectedTaskId);
+                    }
+                } else { 
+                    showToast('Error updating task', 'error'); 
+                }
+            } catch (error) { 
+                showToast('Error updating task', 'error'); 
+            }
+        }
+
+        async function deleteTask(taskId) {
+            if (!confirm('Delete this task?')) return;
+            try {
+                const token = localStorage.getItem('token');
+                await fetch(`${API_URL}/tasks/${taskId}`, { 
+                    method: "DELETE", 
+                    headers: { 'Authorization': `Bearer ${token}` } 
+                });
+                showToast('Task deleted', 'success');
+                if (currentSelectedTaskId === taskId) closeTaskDetail();
+                loadTasks();
+            } catch (error) { 
+                showToast('Error deleting task', 'error'); 
+            }
+        }
+
+        function closeModal() { document.getElementById('taskModal').style.display = 'none'; }
+        
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            toast.className = 'toast';
+            toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMins = Math.floor((now - date) / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `${diffHours} hour ago`;
+            return date.toLocaleDateString();
+        }
+        
+        function escapeHtml(str) { 
+            if (!str) return ''; 
+            return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '&gt;': '&gt;' }[m])); 
+        }
+        
+        window.onclick = function(event) { 
+            const modal = document.getElementById('taskModal'); 
+            if (event.target === modal) closeModal(); 
+        }
+    </script>
+</body>
+</html>

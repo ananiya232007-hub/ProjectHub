@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectHub - Create Task</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h1 {
+            color: #0f172a;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-card .subtitle {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.85rem;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 0.75rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #10b981;
+            padding: 0.75rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='dashboard.html'">Project<span>Hub</span></div>
+            <ul class="nav-links">
+                <li><a onclick="window.location.href='dashboard.html'">Dashboard</a></li>
+                <li><a onclick="window.location.href='my-projects.html'">My Projects</a></li>
+                <li><a onclick="window.location.href='my-tasks.html'">My Tasks</a></li>
+                <li><a onclick="window.location.href='create-project.html'">Create Project</a></li>
+                <li><a onclick="window.location.href='create-task.html'" style="color:#667eea; font-weight:600;">Create Task</a></li>
+            </ul>
+            <div class="user-avatar" id="userAvatar">U</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-card">
+            <h1>➕ Create New Task</h1>
+            <div class="subtitle">Assign tasks to team members</div>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <form id="taskForm">
+                <div class="form-group">
+                    <label>Task Title <span class="required">*</span></label>
+                    <input type="text" id="title" placeholder="Enter task title" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="description" rows="4" placeholder="Enter task description"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Project <span class="required">*</span></label>
+                        <select id="projectId" required>
+                            <option value="">Select Project</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Assign To</label>
+                        <select id="assignedTo">
+                            <option value="">Unassigned</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="priority">
+                            <option value="low">🟢 Low</option>
+                            <option value="medium" selected>🟡 Medium</option>
+                            <option value="high">🔴 High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="date" id="dueDate">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="window.location.href='dashboard.html'">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        window.onload = async function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Set user avatar
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const firstLetter = (user.name || 'U').charAt(0).toUpperCase();
+            document.getElementById('userAvatar').innerText = firstLetter;
+
+            const userRole = user.role || 'developer';
+            
+            // Check if user is manager
+            if (userRole !== 'project_manager') {
+                document.getElementById('errorMessage').textContent = 'Access Denied. Only Project Managers can create tasks.';
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('taskForm').style.display = 'none';
+                return;
+            }
+
+            await loadProjects();
+            await loadUsers();
+        };
+
+        async function loadProjects() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/projects`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const projects = await res.json();
+                const projectSelect = document.getElementById('projectId');
+                
+                if (projects.length === 0) {
+                    projectSelect.innerHTML = '<option value="">No projects available</option>';
+                    return;
+                }
+
+                projectSelect.innerHTML = '<option value="">Select Project</option>' + 
+                    projects.map(project => `<option value="${project._id}">${escapeHtml(project.projectName)}</option>`).join('');
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error loading projects');
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.ok) {
+                    const users = await res.json();
+                    const assignSelect = document.getElementById('assignedTo');
+                    assignSelect.innerHTML = '<option value="">Unassigned</option>' + 
+                        users.map(user => `<option value="${user._id}">${escapeHtml(user.name)} (${user.role.replace('_', ' ')})</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        document.getElementById('taskForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            hideMessages();
+
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const projectId = document.getElementById('projectId').value;
+            const assignedTo = document.getElementById('assignedTo').value || null;
+            const priority = document.getElementById('priority').value;
+            const dueDate = document.getElementById('dueDate').value;
+
+            if (!title) {
+                showError('Task title is required');
+                return;
+            }
+
+            if (!projectId) {
+                showError('Please select a project');
+                return;
+            }
+
+            const taskData = {
+                title: title,
+                description: description || '',
+                projectId: projectId,
+                assignedTo: assignedTo,
+                priority: priority,
+                dueDate: dueDate || null
+            };
+
+            console.log('📤 Sending to:', `${API_URL}/tasks`);
+            console.log('📦 Task Data:', taskData);
+
+            try {
+                const token = localStorage.getItem('token');
+                
+                const res = await fetch(`${API_URL}/tasks`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(taskData)
+                });
+
+                console.log('📥 Response Status:', res.status);
+                const data = await res.json();
+                console.log('📥 Response Data:', data);
+
+                if (res.ok) {
+                    showSuccess('✅ Task created successfully! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    showError(data.message || data.error || 'Failed to create task');
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                showError('Server error: ' + error.message);
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
