@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProjectHub - Edit Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== LIGHT THEME ========== */
+        :root {
+            --bg-gradient-1: #667eea;
+            --bg-gradient-2: #764ba2;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --accent-1: #0f172a;
+            --accent-2: #667eea;
+            --accent-3: #764ba2;
+            --accent-4: #f093fb;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --border-light: rgba(0, 0, 0, 0.08);
+            --particle-color: rgba(135, 206, 235, 0.4);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* ========== DARK THEME ========== */
+        body.dark {
+            --bg-gradient-1: #0f0c29;
+            --bg-gradient-2: #302b63;
+            --card-bg: rgba(30, 41, 59, 0.98);
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --accent-1: #f8fafc;
+            --accent-2: #60a5fa;
+            --accent-3: #a78bfa;
+            --accent-4: #f472b6;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --particle-color: rgba(168, 85, 247, 0.3);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            position: relative;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: floatParticle 20s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+            25% { transform: translateY(-80px) translateX(40px) scale(1.1); }
+            50% { transform: translateY(-40px) translateX(80px) scale(0.9); }
+            75% { transform: translateY(40px) translateX(40px) scale(1.05); }
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.75rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-4));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo:hover { transform: scale(1.02); }
+
+        .nav-links {
+            display: flex;
+            gap: 0.25rem;
+            list-style: none;
+            background: var(--card-bg);
+            padding: 0.25rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-light);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+        .theme-toggle:hover { transform: scale(1.05) rotate(5deg); box-shadow: var(--shadow-md); }
+
+        /* Notification Icon */
+        .notification-icon {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            padding: 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            position: relative;
+        }
+        .notification-icon:hover { transform: scale(1.05); background: var(--accent-2); color: white; }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 0.6rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 50%;
+            font-weight: bold;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        /* User Section */
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .role-badge {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-4));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-sm);
+        }
+        .user-avatar:hover { transform: scale(1.05); box-shadow: var(--shadow-md); }
+
+        .profile-card {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            width: 320px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-2xl);
+            display: none;
+            z-index: 1001;
+            overflow: hidden;
+        }
+        .profile-card.show { display: block; animation: fadeInScale 0.2s ease; }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+        .profile-avatar-large {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent-2);
+            box-shadow: var(--shadow-lg);
+        }
+        .profile-details { padding: 1rem; }
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .detail-icon { font-size: 1.1rem; width: 32px; }
+        .detail-label { font-size: 0.7rem; color: var(--text-tertiary); }
+        .detail-value { font-weight: 600; color: var(--text-primary); font-size: 0.85rem; margin-top: 0.2rem; }
+
+        .logout-btn {
+            width: calc(100% - 2rem);
+            margin: 0 1rem 1rem 1rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            padding: 0.7rem;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+        /* ========== EDIT FORM ========== */
+        .edit-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-2xl);
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .form-card h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .form-card p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-family: inherit;
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-2);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 1rem;
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            background: var(--border-light);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: white;
+            animation: slideInRight 0.3s ease;
+            z-index: 3000;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .edit-container { padding: 0 1rem; }
+            .form-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='dashboard.html'">
+                <div class="logo-icon"><i class="fas fa-cube"></i></div>
+                <div class="logo-text">Project<span style="color:var(--accent-4);">Hub</span></div>
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="window.location.href='dashboard.html'"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a onclick="window.location.href='projects.html'"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a onclick="window.location.href='my-tasks.html'"><i class="fas fa-tasks"></i> My Tasks</a></li>
+            </ul>
+            <div class="user-section">
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">🌙</button>
+                <div class="notification-icon" onclick="window.location.href='notifications.html'">
+                    <i class="fas fa-bell"></i>
+                    <span id="notificationBadge" class="notification-badge" style="display:none;">0</span>
+                </div>
+                <span class="role-badge" id="roleBadge"><i class="fas fa-user-circle"></i> Loading...</span>
+                <div class="user-avatar" id="userAvatar" onclick="toggleProfile()">U</div>
+                <div id="profileCard" class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar-large" id="profileAvatarLetter">U</div>
+                        <h3 id="profileName">User</h3>
+                        <p class="profile-email" id="profileEmail">user@example.com</p>
+                    </div>
+                    <div class="profile-details">
+                        <div class="detail-item"><div class="detail-icon"><i class="fas fa-envelope"></i></div><div><div class="detail-label">EMAIL</div><div class="detail-value" id="detailEmail">-</div></div></div>
+                        <div class="detail-item"><div class="detail-icon"><i class="fas fa-user"></i></div><div><div class="detail-label">NAME</div><div class="detail-value" id="detailName">-</div></div></div>
+                        <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar"></i></div><div><div class="detail-label">MEMBER SINCE</div><div class="detail-value" id="memberSince">-</div></div></div>
+                        <div class="detail-item"><div class="detail-icon"><i class="fas fa-briefcase"></i></div><div><div class="detail-label">ROLE</div><div class="detail-value" id="detailRole">-</div></div></div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="edit-container">
+        <div class="form-card">
+            <h1><i class="fas fa-edit"></i> Edit Project</h1>
+            <p>Update your project details below</p>
+
+            <form id="editForm">
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Project Name</label>
+                    <input type="text" id="projectName" placeholder="Enter project name" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-align-left"></i> Description</label>
+                    <textarea id="description" placeholder="Describe your project" rows="5" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-chart-line"></i> Status</label>
+                    <select id="status">
+                        <option value="active">🟢 Active</option>
+                        <option value="in-progress">🟡 In Progress</option>
+                        <option value="completed">✅ Completed</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-save"></i> Update Project
+                </button>
+                
+                <button type="button" class="btn-cancel" onclick="window.location.href='projects.html'">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000";
+        let currentUser = null;
+
+        // Create animated particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            container.innerHTML = '';
+            
+            const isDark = document.body.classList.contains('dark');
+            
+            const lightColors = [
+                'rgba(135, 206, 235, 0.35)', 'rgba(100, 149, 237, 0.3)',
+                'rgba(70, 130, 180, 0.25)', 'rgba(0, 191, 255, 0.3)',
+                'rgba(176, 224, 230, 0.35)', 'rgba(135, 206, 250, 0.3)',
+                'rgba(0, 149, 255, 0.25)', 'rgba(173, 216, 230, 0.35)'
+            ];
+            
+            const darkColors = [
+                'rgba(168, 85, 247, 0.3)', 'rgba(139, 92, 246, 0.25)',
+                'rgba(192, 132, 252, 0.2)', 'rgba(126, 34, 206, 0.25)',
+                'rgba(147, 51, 234, 0.3)', 'rgba(216, 180, 254, 0.2)',
+                'rgba(167, 139, 250, 0.25)', 'rgba(233, 213, 255, 0.2)'
+            ];
+            
+            const colors = isDark ? darkColors : lightColors;
+            const particleCount = 35;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 190 + 60;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = 15 + Math.random() * 15 + 's';
+                const colorIndex = Math.floor(Math.random() * colors.length);
+                particle.style.background = `radial-gradient(circle, ${colors[colorIndex]}, transparent)`;
+                particle.style.opacity = 0.4 + Math.random() * 0.3;
+                container.appendChild(particle);
+            }
+        }
+
+        // Theme Management
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (document.body.classList.contains('dark')) {
+                themeBtn.innerHTML = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeBtn.innerHTML = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+            createParticles();
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark');
+                document.getElementById('themeToggleBtn').innerHTML = '☀️';
+            }
+            createParticles();
+        }
+
+        // User Functions
+        function getRoleDisplay(role) {
+            const roles = {
+                'project_manager': 'Project Manager',
+                'developer': 'Developer',
+                'designer': 'Designer',
+                'tester': 'Tester',
+                'employee': 'Employee'
+            };
+            return roles[role] || 'Employee';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Just joined';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function updateUserUI(user) {
+            const fullName = user.name || 'User';
+            const email = user.email || 'user@example.com';
+            const firstLetter = fullName.charAt(0).toUpperCase();
+            const roleDisplay = getRoleDisplay(user.role);
+            const memberSince = user.createdAt ? formatDate(user.createdAt) : formatDate(new Date().toISOString());
+
+            document.getElementById('userAvatar').innerText = firstLetter;
+            document.getElementById('profileAvatarLetter').innerText = firstLetter;
+            document.getElementById('profileName').innerText = fullName;
+            document.getElementById('profileEmail').innerText = email;
+            document.getElementById('detailName').innerText = fullName;
+            document.getElementById('detailEmail').innerText = email;
+            document.getElementById('memberSince').innerText = memberSince;
+            document.getElementById('detailRole').innerText = roleDisplay;
+            document.getElementById('roleBadge').innerHTML = `<i class="fas fa-user-circle"></i> ${roleDisplay}`;
+        }
+
+        function toggleProfile() {
+            const card = document.getElementById('profileCard');
+            card.classList.toggle('show');
+        }
+
+        function logout() {
+            if (confirm('Logout from ProjectHub?')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const card = document.getElementById('profileCard');
+            const avatar = document.getElementById('userAvatar');
+            if (card && avatar && !avatar.contains(event.target) && !card.contains(event.target)) {
+                card.classList.remove('show');
+            }
+        });
+
+        // Notification Functions
+        async function fetchUnreadCount() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/notifications`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const notifications = await res.json();
+                const unreadCount = notifications.filter(n => !n.isRead).length;
+                const badge = document.getElementById('notificationBadge');
+                if (badge) {
+                    if (unreadCount > 0) {
+                        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            } catch (error) {}
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            toast.className = 'toast';
+            toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ============ EDIT PROJECT FUNCTIONALITY ============
+        const params = new URLSearchParams(window.location.search);
+        const projectId = params.get("id");
+
+        async function loadProject() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/projects`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const projects = await res.json();
+                const project = projects.find(p => p._id === projectId);
+
+                if (project) {
+                    document.getElementById("projectName").value = project.projectName;
+                    document.getElementById("description").value = project.description || '';
+                    document.getElementById("status").value = project.status || 'active';
+                } else {
+                    showToast('Project not found!', 'error');
+                    setTimeout(() => window.location.href = 'projects.html', 1500);
+                }
+            } catch (error) {
+                console.error('Error loading project:', error);
+                showToast('Error loading project details', 'error');
+            }
+        }
+
+        document.getElementById("editForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const projectName = document.getElementById("projectName").value;
+            const description = document.getElementById("description").value;
+            const status = document.getElementById("status").value;
+
+            if (!projectName) {
+                showToast('Please enter project name', 'error');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/projects/${projectId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ projectName, description, status })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast('Project updated successfully! 🎉', 'success');
+                    setTimeout(() => {
+                        window.location.href = "projects.html";
+                    }, 1500);
+                } else {
+                    showToast(data.message || 'Error updating project', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Server error. Make sure backend is running on port 5000', 'error');
+            }
+        });
+
+        // Initialize page
+        window.onload = async function() {
+            loadTheme();
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                currentUser = JSON.parse(localStorage.getItem('user'));
+            } catch(e) {}
+            
+            if (!currentUser || !currentUser.name) {
+                currentUser = { name: 'User', email: 'user@example.com', role: 'employee', createdAt: new Date().toISOString() };
+            }
+
+            updateUserUI(currentUser);
+            await loadProject();
+            await fetchUnreadCount();
+            setInterval(fetchUnreadCount, 10000);
+        };
+    </script>
+</body>
+</html>
