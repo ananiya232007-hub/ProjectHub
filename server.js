@@ -6,15 +6,17 @@ console.log("🔥 NEW SERVER FILE RUNNING with RBAC + Comments + Notifications +
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static((__dirname)));
 /* ---------------- ROOT ROUTE ---------------- */
 app.get("/", (req, res) => {
-    res.send("ProjectHub Server Running 🚀 with RBAC + All Features");
+  res.sendFile(path.join(__dirname, "login.html"));
 });
 
 /* ---------------- MongoDB CONNECTION ---------------- */
