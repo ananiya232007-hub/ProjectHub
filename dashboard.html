@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProjectHub - Luxury Enterprise Suite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <title>ProjectHub - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,53 +14,38 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* ========== LIGHT THEME - Ultra Premium ========== */
-        :root {
-            --bg-gradient-1: #f8fafc;
-            --bg-gradient-2: #e2e8f0;
+        /* Light Theme */
+        .theme-light {
+            --bg-gradient-1: #667eea;
+            --bg-gradient-2: #764ba2;
             --card-bg: rgba(255, 255, 255, 0.98);
             --glass-bg: rgba(255, 255, 255, 0.7);
-            --accent-1: #0f172a;
-            --accent-2: #3b82f6;
-            --accent-3: #8b5cf6;
-            --accent-4: #ec4899;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-tertiary: #64748b;
+            --accent-2: #667eea;
+            --accent-3: #764ba2;
+            --accent-4: #f093fb;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
             --border-light: rgba(0, 0, 0, 0.08);
-            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        /* ========== DARK THEME - Ultra Premium Dark ========== */
-        body.dark {
-            --bg-gradient-1: #020617;
-            --bg-gradient-2: #0f172a;
+        /* Dark Theme */
+        .theme-dark {
+            --bg-gradient-1: #0f0c29;
+            --bg-gradient-2: #302b63;
             --card-bg: rgba(30, 41, 59, 0.98);
             --glass-bg: rgba(30, 41, 59, 0.7);
-            --accent-1: #f8fafc;
             --accent-2: #60a5fa;
             --accent-3: #a78bfa;
             --accent-4: #f472b6;
             --text-primary: #f8fafc;
             --text-secondary: #cbd5e1;
-            --text-tertiary: #94a3b8;
             --border-light: rgba(255, 255, 255, 0.1);
-            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
             --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
@@ -69,7 +54,7 @@
             position: relative;
         }
 
-        /* Animated Background Particles */
+        /* Particles Animation */
         .particles {
             position: fixed;
             top: 0;
@@ -83,80 +68,82 @@
 
         .particle {
             position: absolute;
-            background: radial-gradient(circle, var(--accent-2), transparent);
             border-radius: 50%;
-            opacity: 0.1;
             animation: floatParticle 20s infinite ease-in-out;
         }
 
         @keyframes floatParticle {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-100px) translateX(50px); }
-            50% { transform: translateY(-50px) translateX(100px); }
-            75% { transform: translateY(50px) translateX(50px); }
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+            25% { transform: translateY(-80px) translateX(40px) scale(1.1); }
+            50% { transform: translateY(-40px) translateX(80px) scale(0.9); }
+            75% { transform: translateY(40px) translateX(40px) scale(1.05); }
         }
 
-        /* ========== NAVBAR - Premium Glass ========== */
-        .navbar {
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-light);
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            z-index: 1000;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(10deg);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-light);
+            padding: 1rem 2rem;
             position: sticky;
             top: 0;
-            z-index: 1000;
-            padding: 0.75rem 2rem;
+            z-index: 100;
         }
 
         .nav-container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Premium Logo */
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
+            font-size: 1.8rem;
+            font-weight: 800;
             background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .logo-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-2), var(--accent-4));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
-        .logo:hover { transform: scale(1.02); }
+        .logo span {
+            background: linear-gradient(135deg, var(--accent-4), var(--accent-3));
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
 
-        /* Navigation Links - Premium */
         .nav-links {
             display: flex;
-            gap: 0.25rem;
+            gap: 2rem;
             list-style: none;
-            background: var(--card-bg);
-            padding: 0.25rem;
-            border-radius: 50px;
-            border: 1px solid var(--border-light);
         }
 
         .nav-links a {
@@ -164,307 +151,221 @@
             color: var(--text-secondary);
             font-weight: 500;
             padding: 0.5rem 1rem;
-            border-radius: 40px;
+            border-radius: 12px;
             transition: all 0.3s;
             cursor: pointer;
-            font-size: 0.85rem;
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent-2);
+            background: rgba(102, 126, 234, 0.1);
         }
 
-        /* Theme Toggle - Premium */
-        .theme-toggle {
-            background: var(--card-bg);
-            border: 1px solid var(--border-light);
-            padding: 0.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            backdrop-filter: blur(10px);
-        }
-        .theme-toggle:hover { transform: scale(1.05) rotate(5deg); box-shadow: var(--shadow-md); }
-
-        /* User Section Premium */
+        /* User Section */
         .user-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .notification-wrapper {
             position: relative;
         }
 
-        .notification-icon {
-            background: var(--card-bg);
-            border: 1px solid var(--border-light);
-            padding: 0.5rem;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-        .notification-icon:hover { transform: scale(1.05); background: var(--accent-2); color: white; }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-            font-size: 0.6rem;
-            padding: 0.15rem 0.4rem;
-            border-radius: 50%;
-            font-weight: bold;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .notification-dropdown {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            width: 380px;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-2xl);
-            display: none;
-            z-index: 1002;
-            overflow: hidden;
-        }
-        .notification-dropdown.show { display: block; animation: fadeInScale 0.2s ease; }
-
-        .dropdown-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .notif-item {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-light);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .notif-item:hover { background: rgba(59, 130, 246, 0.1); }
-        .notif-item-title { font-weight: 600; font-size: 0.85rem; color: var(--text-primary); }
-        .notif-item-msg { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; }
-        .notif-item-time { font-size: 0.65rem; color: var(--text-tertiary); margin-top: 0.2rem; }
-
-        .role-badge {
-            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
-            color: white;
-            padding: 0.35rem 1rem;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            box-shadow: var(--shadow-sm);
-        }
-
         .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent-2), var(--accent-4));
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: var(--shadow-sm);
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        .user-avatar:hover { transform: scale(1.05); box-shadow: var(--shadow-md); }
 
+        .user-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Profile Card */
         .profile-card {
             position: absolute;
             top: 55px;
             right: 0;
-            width: 320px;
+            width: 280px;
             background: var(--card-bg);
             backdrop-filter: blur(20px);
-            border-radius: 24px;
+            border-radius: 20px;
             border: 1px solid var(--border-light);
             box-shadow: var(--shadow-2xl);
             display: none;
             z-index: 1001;
             overflow: hidden;
         }
-        .profile-card.show { display: block; animation: fadeInScale 0.2s ease; }
+
+        .profile-card.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         .profile-header {
             background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
-            padding: 1.5rem;
+            padding: 1.2rem;
             text-align: center;
             color: white;
         }
+
         .profile-avatar-large {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 2rem;
+            margin: 0 auto 0.8rem;
+            font-size: 1.8rem;
             font-weight: bold;
             text-transform: uppercase;
             color: var(--accent-2);
-            box-shadow: var(--shadow-lg);
         }
-        .profile-details { padding: 1rem; }
+
+        .profile-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .profile-email {
+            font-size: 0.75rem;
+            opacity: 0.85;
+        }
+
+        .profile-details {
+            padding: 0.8rem 1rem;
+        }
+
         .detail-item {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            padding: 0.7rem 0;
+            padding: 0.6rem 0;
             border-bottom: 1px solid var(--border-light);
         }
-        .detail-icon { font-size: 1.1rem; width: 32px; }
-        .detail-label { font-size: 0.7rem; color: var(--text-tertiary); }
-        .detail-value { font-weight: 600; color: var(--text-primary); font-size: 0.85rem; margin-top: 0.2rem; }
+
+        .detail-icon {
+            font-size: 1.2rem;
+            width: 32px;
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
 
         .logout-btn {
             width: calc(100% - 2rem);
             margin: 0 1rem 1rem 1rem;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, #f5576c, #f093fb);
             border: none;
             padding: 0.7rem;
             border-radius: 40px;
             color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: 0.2s;
         }
-        .logout-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
-        /* ========== MAIN CONTENT ========== */
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Dashboard Content */
         .dashboard-content {
             max-width: 1400px;
             margin: 2rem auto;
             padding: 0 2rem;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
-        /* Welcome Banner - Ultra Premium */
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
-            border-radius: 32px;
-            padding: 2.5rem;
+        .welcome-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 1.5rem 2rem;
             margin-bottom: 2rem;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-light);
         }
-        .welcome-banner::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
-            border-radius: 50%;
-        }
-        .welcome-banner h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
-        .welcome-banner p { opacity: 0.9; font-size: 0.9rem; }
 
-        /* Stats Grid - Premium Cards */
-        .stats-grid {
+        .welcome-section h1 {
+            color: var(--text-primary);
+            font-size: 1.7rem;
+        }
+
+        .welcome-section p {
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        /* Stats Cards */
+        .card-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .stat-card {
+        .card {
             background: var(--card-bg);
-            border-radius: 24px;
-            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            padding: 1.4rem;
+            border-radius: 28px;
+            text-align: center;
+            transition: 0.2s;
             border: 1px solid var(--border-light);
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
         }
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-2), var(--accent-3), var(--accent-4));
-            transform: scaleX(0);
-            transition: transform 0.3s;
-        }
-        .stat-card:hover::after { transform: scaleX(1); }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
 
-        .stat-value {
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .card h2 {
             font-size: 2.2rem;
             font-weight: 800;
             background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            margin-bottom: 0.3rem;
         }
-        .stat-label { color: var(--text-secondary); margin-top: 0.3rem; font-size: 0.85rem; font-weight: 500; }
 
-        /* Progress Section Premium */
-        .progress-section {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-sm);
-        }
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .progress-title { font-weight: 600; color: var(--text-primary); }
-        .progress-percentage { font-size: 1.2rem; font-weight: 700; color: var(--accent-2); }
-
-        .progress-bar-container {
-            background: var(--border-light);
-            border-radius: 20px;
-            overflow: hidden;
-            height: 8px;
-        }
-        .progress-bar-fill {
-            background: linear-gradient(90deg, var(--accent-2), var(--accent-3));
-            width: 0%;
-            height: 100%;
-            border-radius: 20px;
-            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+        .card p {
+            color: var(--text-secondary);
+            font-weight: 500;
         }
 
         /* Section Header */
@@ -472,30 +373,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 2rem 0 1.5rem 0;
+            margin: 2rem 0 1.2rem 0;
         }
+
         .section-header h2 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            letter-spacing: -0.3px;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 700;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
             color: white;
             border: none;
-            padding: 0.6rem 1.3rem;
+            padding: 0.6rem 1.4rem;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.85rem;
-            box-shadow: var(--shadow-sm);
+            transition: 0.2s;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
-        /* Projects Grid Premium */
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Projects Grid */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -504,95 +407,79 @@
 
         .project-card {
             background: var(--card-bg);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 1.2rem;
+            border-left: 4px solid var(--accent-2);
             border: 1px solid var(--border-light);
-            transition: all 0.3s;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
+            transition: 0.2s;
         }
+
         .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--accent-2);
+            transform: translateX(5px);
+            box-shadow: var(--shadow-2xl);
         }
-        .project-title { font-weight: 700; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.3rem; }
-        .project-desc { color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.8rem; line-height: 1.4; }
+
+        .project-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+
         .project-status {
             display: inline-block;
             padding: 0.2rem 0.8rem;
             border-radius: 30px;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
-        .status-active { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-        .status-completed { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-        .status-progress { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+
+        .status-active,
+        .status-in-progress {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
 
         .empty-state {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             background: var(--card-bg);
+            backdrop-filter: blur(20px);
             border-radius: 20px;
             color: var(--text-secondary);
-            grid-column: 1/-1;
+            grid-column: 1 / -1;
         }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-        }
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 2px solid var(--border-light);
-            border-top-color: var(--accent-2);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .nav-links { display: none; } }
     </style>
 </head>
-<body>
-    <!-- Animated Particles -->
+<body class="theme-light">
+    <!-- Particles Animation -->
     <div class="particles" id="particles"></div>
+    
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggleBtn">🌙</button>
 
     <div class="dashboard">
         <nav class="navbar">
             <div class="nav-container">
-                <div class="logo" onclick="window.location.href='dashboard.html'">
-                    <div class="logo-icon"><i class="fas fa-cube"></i></div>
-                    <div class="logo-text">Project<span style="color:var(--accent-4);">Hub</span></div>
-                </div>
+                <div class="logo" onclick="window.location.href='dashboard.html'">Project<span>Hub</span></div>
                 <ul class="nav-links">
-                    <li><a class="active" onclick="window.location.href='dashboard.html'"><i class="fas fa-th-large"></i> Dashboard</a></li>
-                    <li><a onclick="window.location.href='projects.html'"><i class="fas fa-project-diagram"></i> Projects</a></li>
-                    <li><a onclick="window.location.href='my-tasks.html'"><i class="fas fa-tasks"></i> Tasks</a></li>
-                    <li><a onclick="window.location.href='create-project.html'"><i class="fas fa-plus-circle"></i> Create</a></li>
+                    <li><a class="active" onclick="window.location.href='dashboard.html'">Dashboard</a></li>
+                    <li><a onclick="window.location.href='projects.html'">Projects</a></li>
+                    <li><a onclick="window.location.href='create-project.html'">Create Project</a></li>
                 </ul>
                 <div class="user-section">
-                    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">🌙</button>
-                    <div class="notification-wrapper">
-                        <div class="notification-icon" onclick="toggleNotificationDropdown(event)">
-                            <i class="fas fa-bell"></i>
-                            <span id="notificationBadge" class="notification-badge" style="display:none;">0</span>
-                        </div>
-                        <div id="notificationDropdown" class="notification-dropdown">
-                            <div class="dropdown-header"><span><i class="fas fa-bell"></i> Notifications</span><a href="notifications.html" style="color:var(--accent-2);">View all</a></div>
-                            <div id="dropdownNotifList"><div style="padding:1rem;text-align:center;">Loading...</div></div>
-                        </div>
-                    </div>
-                    <span class="role-badge" id="roleBadge"><i class="fas fa-user-circle"></i> Developer</span>
                     <div class="user-avatar" id="userAvatar" onclick="toggleProfile()">U</div>
                     <div id="profileCard" class="profile-card">
                         <div class="profile-header">
@@ -601,224 +488,265 @@
                             <p class="profile-email" id="profileEmail">user@example.com</p>
                         </div>
                         <div class="profile-details">
-                            <div class="detail-item"><div class="detail-icon"><i class="fas fa-envelope"></i></div><div><div class="detail-label">EMAIL</div><div class="detail-value" id="detailEmail">-</div></div></div>
-                            <div class="detail-item"><div class="detail-icon"><i class="fas fa-user"></i></div><div><div class="detail-label">NAME</div><div class="detail-value" id="detailName">-</div></div></div>
-                            <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar"></i></div><div><div class="detail-label">MEMBER SINCE</div><div class="detail-value" id="memberSince">-</div></div></div>
-                            <div class="detail-item"><div class="detail-icon"><i class="fas fa-briefcase"></i></div><div><div class="detail-label">ROLE</div><div class="detail-value" id="detailRole">-</div></div></div>
+                            <div class="detail-item">
+                                <div class="detail-icon">📧</div>
+                                <div class="detail-info">
+                                    <div class="detail-label">EMAIL</div>
+                                    <div class="detail-value" id="detailEmail">user@example.com</div>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-icon">👤</div>
+                                <div class="detail-info">
+                                    <div class="detail-label">FULL NAME</div>
+                                    <div class="detail-value" id="detailName">User</div>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-icon">📅</div>
+                                <div class="detail-info">
+                                    <div class="detail-label">MEMBER SINCE</div>
+                                    <div class="detail-value" id="memberSince">2024</div>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-icon">🏢</div>
+                                <div class="detail-info">
+                                    <div class="detail-label">ROLE</div>
+                                    <div class="detail-value" id="userRole">Project Manager</div>
+                                </div>
+                            </div>
                         </div>
-                        <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
                     </div>
                 </div>
             </div>
         </nav>
 
         <div class="dashboard-content">
-            <div class="welcome-banner">
-                <h1>Welcome back, <span id="welcomeName">User</span>! <span style="font-size:1.5rem;">✨</span></h1>
-                <p>Track your projects, collaborate with team, and stay productive.</p>
+            <div class="welcome-section">
+                <h1>Welcome back, <span id="welcomeName">User</span>! 👋</h1>
+                <p>Track your projects and progress at a glance.</p>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-value" id="totalProjects">0</div><div class="stat-label"><i class="fas fa-folder"></i> Total Projects</div></div>
-                <div class="stat-card"><div class="stat-value" id="activeProjects">0</div><div class="stat-label"><i class="fas fa-play-circle"></i> Active</div></div>
-                <div class="stat-card"><div class="stat-value" id="completedProjects">0</div><div class="stat-label"><i class="fas fa-check-circle"></i> Completed</div></div>
-                <div class="stat-card"><div class="stat-value" id="teamMembers">0</div><div class="stat-label"><i class="fas fa-users"></i> Team Members</div></div>
-            </div>
-
-            <div class="progress-section">
-                <div class="progress-header">
-                    <span class="progress-title"><i class="fas fa-chart-line"></i> Overall Progress</span>
-                    <span class="progress-percentage" id="progressPercentage">0%</span>
+            <div class="card-container">
+                <div class="card">
+                    <h2 id="totalProjects">0</h2>
+                    <p>Total Projects</p>
                 </div>
-                <div class="progress-bar-container"><div class="progress-bar-fill" id="progressBarFill"></div></div>
-                <div style="display:flex; justify-content:space-between; margin-top:0.5rem; font-size:0.7rem; color:var(--text-tertiary);">
-                    <span><i class="fas fa-check-circle"></i> <span id="completedCount">0</span> Done</span>
-                    <span><i class="fas fa-folder"></i> <span id="totalCount">0</span> Total</span>
+                <div class="card">
+                    <h2 id="activeProjects">0</h2>
+                    <p>Active Projects</p>
+                </div>
+                <div class="card">
+                    <h2 id="completedProjects">0</h2>
+                    <p>Completed Projects</p>
+                </div>
+                <div class="card">
+                    <h2 id="teamMembers">8</h2>
+                    <p>Team Members</p>
                 </div>
             </div>
 
             <div class="section-header">
-                <h2><i class="fas fa-clock"></i> Recent Projects</h2>
-                <button class="btn-primary" onclick="window.location.href='create-project.html'"><i class="fas fa-plus"></i> New Project</button>
+                <h2>📁 Recent Projects</h2>
+                <button class="btn-primary" onclick="window.location.href='create-project.html'">+ New Project</button>
             </div>
             <div id="recentProjects" class="projects-grid">
-                <div class="loading"><div class="loading-spinner"></div><p>Loading projects...</p></div>
+                <div class="empty-state">Loading projects...</div>
             </div>
         </div>
     </div>
 
     <script>
         var API_URL = window.location.origin;
-        let currentUser = null;
 
-        // Create animated particles
+        // Particles Animation
         function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
+            var container = document.getElementById('particles');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            var isDark = document.body.classList.contains('theme-dark');
+            
+            var lightColors = [
+                'rgba(135, 206, 235, 0.35)', 'rgba(100, 149, 237, 0.3)',
+                'rgba(70, 130, 180, 0.25)', 'rgba(0, 191, 255, 0.3)',
+                'rgba(176, 224, 230, 0.35)', 'rgba(135, 206, 250, 0.3)'
+            ];
+            
+            var darkColors = [
+                'rgba(168, 85, 247, 0.3)', 'rgba(139, 92, 246, 0.25)',
+                'rgba(192, 132, 252, 0.2)', 'rgba(126, 34, 206, 0.25)',
+                'rgba(147, 51, 234, 0.3)', 'rgba(216, 180, 254, 0.2)'
+            ];
+            
+            var colors = isDark ? darkColors : lightColors;
+            
+            for (var i = 0; i < 30; i++) {
+                var particle = document.createElement('div');
                 particle.className = 'particle';
-                particle.style.width = Math.random() * 200 + 50 + 'px';
-                particle.style.height = particle.style.width;
+                var size = Math.random() * 150 + 50;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
                 particle.style.left = Math.random() * 100 + '%';
                 particle.style.top = Math.random() * 100 + '%';
                 particle.style.animationDelay = Math.random() * 20 + 's';
-                particle.style.animationDuration = 15 + Math.random() * 10 + 's';
+                particle.style.animationDuration = 15 + Math.random() * 15 + 's';
+                var colorIndex = Math.floor(Math.random() * colors.length);
+                particle.style.background = 'radial-gradient(circle, ' + colors[colorIndex] + ', transparent)';
+                particle.style.opacity = 0.3 + Math.random() * 0.3;
                 container.appendChild(particle);
             }
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            const themeBtn = document.getElementById('themeToggleBtn');
-            if (document.body.classList.contains('dark')) {
-                themeBtn.innerHTML = '☀️';
+        // Theme Functions
+        function setTheme(isDark) {
+            var body = document.body;
+            var btn = document.getElementById('themeToggleBtn');
+            if (isDark) {
+                body.classList.remove('theme-light');
+                body.classList.add('theme-dark');
+                if (btn) btn.innerHTML = '☀️';
                 localStorage.setItem('theme', 'dark');
             } else {
-                themeBtn.innerHTML = '🌙';
+                body.classList.remove('theme-dark');
+                body.classList.add('theme-light');
+                if (btn) btn.innerHTML = '🌙';
                 localStorage.setItem('theme', 'light');
             }
+            createParticles();
+        }
+
+        function toggleTheme() {
+            var isDark = document.body.classList.contains('theme-dark');
+            setTheme(!isDark);
         }
 
         function loadTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark');
-                document.getElementById('themeToggleBtn').innerHTML = '☀️';
+            var saved = localStorage.getItem('theme');
+            if (saved === 'dark') {
+                setTheme(true);
+            } else {
+                setTheme(false);
             }
         }
 
-        window.onload = async function() {
-            createParticles();
-            loadTheme();
-            const token = localStorage.getItem('token');
-            if (!token) { window.location.href = 'login.html'; return; }
-            try { currentUser = JSON.parse(localStorage.getItem('user')); } catch(e) {}
-            if (!currentUser) currentUser = { name: 'User', email: 'user@example.com', role: 'developer', createdAt: new Date().toISOString() };
-            updateUserUI();
-            await loadDashboard();
-            await loadNotificationsForDropdown();
-            await fetchUnreadCount();
-            setInterval(fetchUnreadCount, 10000);
-            setInterval(loadNotificationsForDropdown, 15000);
-        };
-
-        async function fetchUnreadCount() {
-            try {
-                const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/api/notifications`, { headers: { 'Authorization': `Bearer ${token}` } });
-                const notifications = await res.json();
-                const unreadCount = notifications.filter(n => !n.isRead).length;
-                const badge = document.getElementById('notificationBadge');
-                if (badge) {
-                    if (unreadCount > 0) { badge.textContent = unreadCount > 9 ? '9+' : unreadCount; badge.style.display = 'flex'; }
-                    else { badge.style.display = 'none'; }
-                }
-            } catch (error) { console.error(error); }
+        // Profile Functions
+        function toggleProfile() {
+            const card = document.getElementById('profileCard');
+            card.classList.toggle('show');
         }
 
-        async function loadNotificationsForDropdown() {
-            try {
-                const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/api/notifications`, { headers: { 'Authorization': `Bearer ${token}` } });
-                const notifications = await res.json();
-                const recentNotifs = notifications.slice(0, 5);
-                const dropdownList = document.getElementById('dropdownNotifList');
-                if (!dropdownList) return;
-                if (recentNotifs.length === 0) { dropdownList.innerHTML = '<div style="padding:1rem;text-align:center;color:var(--text-tertiary);">No notifications</div>'; return; }
-                dropdownList.innerHTML = recentNotifs.map(notif => `<div class="notif-item ${!notif.isRead ? 'unread' : ''}" onclick="openNotificationFromDropdown('${notif.relatedId}', '${notif._id}')"><div class="notif-item-title">${escapeHtml(notif.title)}</div><div class="notif-item-msg">${escapeHtml(notif.message.substring(0, 60))}${notif.message.length > 60 ? '...' : ''}</div><div class="notif-item-time"><i class="far fa-clock"></i> ${formatTime(notif.createdAt)}</div></div>`).join('');
-                dropdownList.innerHTML += '<a href="notifications.html" class="view-all-btn" style="display:block;text-align:center;padding:1rem;color:var(--accent-2);text-decoration:none;">View all →</a>';
-            } catch (error) { console.error(error); }
-        }
-
-        async function openNotificationFromDropdown(taskId, notifId) {
-            if (!taskId) return;
-            try {
-                const token = localStorage.getItem('token');
-                await fetch(`${API_URL}/api/notifications/${notifId}/read`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
-                const res = await fetch(`${API_URL}/tasks/${taskId}`, { headers: { 'Authorization': `Bearer ${token}` } });
-                const task = await res.json();
-                if (task && task.projectId) window.location.href = `kanban.html?projectId=${task.projectId}&taskId=${taskId}`;
-            } catch (error) { console.error(error); }
-        }
-
-        function toggleNotificationDropdown(event) { event.stopPropagation(); document.getElementById('notificationDropdown').classList.toggle('show'); }
+        // Close profile card when clicking outside
         document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('notificationDropdown');
-            const notifIcon = document.querySelector('.notification-icon');
-            if (dropdown && notifIcon && !notifIcon.contains(event.target) && !dropdown.contains(event.target)) dropdown.classList.remove('show');
             const card = document.getElementById('profileCard');
             const avatar = document.getElementById('userAvatar');
-            if (card && avatar && !avatar.contains(event.target) && !card.contains(event.target)) card.classList.remove('show');
+            if (card && avatar && !avatar.contains(event.target) && !card.contains(event.target)) {
+                card.classList.remove('show');
+            }
         });
 
-        function getRoleDisplay(role) {
-            const roles = { 'project_manager': 'Project Manager', 'developer': 'Developer', 'designer': 'Designer', 'tester': 'QA Engineer' };
-            return roles[role] || 'Developer';
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
         }
 
-        function formatDate(dateString) {
-            if (!dateString) return 'Just joined';
-            return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        // Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-        function formatTime(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMins = Math.floor((now - date) / 60000);
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} min ago`;
-            const diffHours = Math.floor(diffMins / 60);
-            if (diffHours < 24) return `${diffHours} hour ago`;
-            return date.toLocaleDateString();
-        }
-
-        function updateUserUI() {
-            const fullName = currentUser.name || 'User';
-            const email = currentUser.email || 'user@example.com';
-            const firstLetter = fullName.charAt(0).toUpperCase();
-            const roleDisplay = getRoleDisplay(currentUser.role);
-            const memberSince = currentUser.createdAt ? formatDate(currentUser.createdAt) : formatDate(new Date().toISOString());
-            document.getElementById('userAvatar').innerText = firstLetter;
-            document.getElementById('profileAvatarLetter').innerText = firstLetter;
-            document.getElementById('profileName').innerText = fullName;
-            document.getElementById('profileEmail').innerText = email;
-            document.getElementById('detailName').innerText = fullName;
-            document.getElementById('detailEmail').innerText = email;
-            document.getElementById('memberSince').innerText = memberSince;
-            document.getElementById('detailRole').innerText = roleDisplay;
-            document.getElementById('roleBadge').innerHTML = `<i class="fas fa-user-circle"></i> ${roleDisplay}`;
-            document.getElementById('welcomeName').innerText = fullName.split(' ')[0];
-        }
-
-        function toggleProfile() { document.getElementById('profileCard').classList.toggle('show'); }
-
+        // Load Dashboard Data
         async function loadDashboard() {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`${API_URL}/projects`, { headers: { 'Authorization': `Bearer ${token}` } });
-                if (res.status === 401) { localStorage.removeItem('token'); window.location.href = 'login.html'; return; }
+                const res = await fetch(`${API_URL}/projects`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
                 const projects = await res.json();
+
                 const total = projects.length;
                 const completed = projects.filter(p => p.status === 'completed').length;
                 const active = projects.filter(p => p.status !== 'completed').length;
-                const completionPercentage = total === 0 ? 0 : Math.round((completed / total) * 100);
-                document.getElementById('totalProjects').textContent = total;
-                document.getElementById('activeProjects').textContent = active;
-                document.getElementById('completedProjects').textContent = completed;
-                document.getElementById('teamMembers').textContent = '12';
-                document.getElementById('completedCount').textContent = completed;
-                document.getElementById('totalCount').textContent = total;
-                document.getElementById('progressPercentage').textContent = completionPercentage + '%';
-                document.getElementById('progressBarFill').style.width = completionPercentage + '%';
-                const recentProjects = projects.slice(-3).reverse();
+
+                document.getElementById('totalProjects').innerText = total;
+                document.getElementById('activeProjects').innerText = active;
+                document.getElementById('completedProjects').innerText = completed;
+
+                const recent = projects.slice(-3).reverse();
                 const container = document.getElementById('recentProjects');
-                if (recentProjects.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i> No projects yet. Create your first project!</div>'; return; }
-                container.innerHTML = recentProjects.map(project => `<div class="project-card" onclick="window.location.href='kanban.html?projectId=${project._id}'"><div class="project-title">${escapeHtml(project.projectName)}</div><div class="project-desc">${escapeHtml(project.description || 'No description')}</div><span class="project-status status-${project.status || 'active'}">${(project.status || 'ACTIVE').toUpperCase()}</span></div>`).join('');
-            } catch (error) { console.error(error); document.getElementById('recentProjects').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i> Error loading projects. Make sure server is running.</div>'; }
+
+                if (recent.length === 0) {
+                    container.innerHTML = '<div class="empty-state">📭 No projects yet. Create your first project!</div>';
+                    return;
+                }
+
+                container.innerHTML = recent.map(proj => `
+                    <div class="project-card">
+                        <div class="project-title">${escapeHtml(proj.projectName)}</div>
+                        <div class="project-desc">${escapeHtml(proj.description || 'No description')}</div>
+                        <span class="project-status status-${proj.status || 'active'}">${(proj.status || 'ACTIVE').toUpperCase()}</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('recentProjects').innerHTML = '<div class="empty-state">⚠️ Server error. Make sure backend is running on port 5000</div>';
+            }
         }
 
-        function logout() { if (confirm('Logout from ProjectHub?')) { localStorage.clear(); window.location.href = 'login.html'; } }
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+        // Update User UI
+        function updateUserUI() {
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                try {
+                    const userData = JSON.parse(storedUser);
+                    const name = userData.name || 'User';
+                    const email = userData.email || 'user@example.com';
+                    const firstLetter = name.charAt(0).toUpperCase();
+
+                    document.getElementById('userAvatar').innerText = firstLetter;
+                    document.getElementById('profileAvatarLetter').innerText = firstLetter;
+                    document.getElementById('profileName').innerText = name;
+                    document.getElementById('profileEmail').innerText = email;
+                    document.getElementById('detailName').innerText = name;
+                    document.getElementById('detailEmail').innerText = email;
+                    document.getElementById('welcomeName').innerText = name.split(' ')[0];
+                } catch(e) {}
+            }
+        }
+
+        // Initialize
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadTheme();
+            updateUserUI();
+            loadDashboard();
+            
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', toggleTheme);
+            }
+        };
     </script>
 </body>
 </html>
