@@ -320,8 +320,7 @@
 
     <script>
         (function() {
-            var API_URL = 'http://localhost:5000';
-
+           var API_URL = window.location.origin;
             function createParticles() {
                 var container = document.getElementById('particles');
                 if (!container) return;
