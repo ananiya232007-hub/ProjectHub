@@ -125,21 +125,12 @@
             animation: slideUp 0.6s ease;
             position: relative;
             z-index: 2;
-            max-height: 90vh;
-            overflow-y: auto;
+            /* ✅ REMOVED SCROLLBAR - No overflow-y */
+            max-height: none;
+            overflow-y: visible;
         }
 
-        .auth-card::-webkit-scrollbar {
-            width: 6px;
-        }
-        .auth-card::-webkit-scrollbar-track {
-            background: var(--border-light);
-            border-radius: 10px;
-        }
-        .auth-card::-webkit-scrollbar-thumb {
-            background: var(--accent-2);
-            border-radius: 10px;
-        }
+        /* ✅ REMOVED SCROLLBAR STYLES - No scrollbar at all */
 
         @keyframes slideUp {
             from { transform: translateY(50px); opacity: 0; }
@@ -320,7 +311,8 @@
 
     <script>
         (function() {
-           var API_URL = window.location.origin;
+            var API_URL = window.location.origin;
+            
             function createParticles() {
                 var container = document.getElementById('particles');
                 if (!container) return;
